@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/theme"
+    android:clipChildren="false"
+    tools:context=".MainActivity">
+
+
+
+    <WebView
+        android:id="@+id/web"
+        android:layout_marginTop="50dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    </WebView>
+    <com.borutsky.neumorphism.NeumorphicFrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        app:state="flat"
+        android:clipChildren="false"
+        app:background_color="@color/theme"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" >
+        <LinearLayout
+            android:clipChildren="false"
+            android:layout_margin="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Auto Scroll Speed" />
+                <SeekBar
+                    android:id="@+id/seekBar2"
+                    style="@style/Widget.AppCompat.SeekBar.Discrete"
+                    android:layout_width="match_parent"
+                    android:max="5"
+                    android:layout_weight="1"
+                    android:progress="0"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+            <LinearLayout
+                android:gravity="center"
+                android:clipChildren="false"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent">
+                <com.borutsky.neumorphism.NeumorphicFrameLayout
+                    android:id="@+id/button"
+                    app:state="flat"
+                    app:shape="circle"
+                    app:background_color="@color/theme"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent">
+                    <ImageView
+                        android:padding="5dp"
+                        android:id="@+id/imageView"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_weight="1"
+                        app:srcCompat="@drawable/ig_white" />
+                </com.borutsky.neumorphism.NeumorphicFrameLayout>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/textView2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Auto React" />
+                <CheckBox
+                    android:id="@+id/checkBox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+        </LinearLayout>
+    </com.borutsky.neumorphism.NeumorphicFrameLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
