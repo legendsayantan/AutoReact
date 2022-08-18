@@ -1,10 +1,10 @@
-//Facebook AutoReactor
+//Facebook AutoReactor - only works in m.facebook.com site
 
 var posts;
 var currentPost = null;
 var cancel;
-var delay = 3000;//change this parameter,500+
-var autoscroll = false;//change this parameter
+var delay = 3000;//change this parameter to change speed, 1000+
+var autoscroll = false;//change this parameter to true if running on pc and you need autoscrolling
 var userHasScrolled = false;
 window.onscroll = async function (e){
     //Ad remover
