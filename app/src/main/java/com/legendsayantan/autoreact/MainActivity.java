@@ -5,13 +5,11 @@ import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
 import android.webkit.ConsoleMessage;
-import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.Toast;
@@ -23,6 +21,7 @@ import com.borutsky.neumorphism.NeumorphicFrameLayout;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -89,10 +88,7 @@ public class MainActivity extends AppCompatActivity {
                                 "        }\n" +
                                 "    }\n" +
                                 "}"
-                        , new ValueCallback<String>() {
-                            @Override
-                            public void onReceiveValue(String s) { }
-                        });
+                        , s -> { });
                 super.onPageFinished(view, url);
             }
         });
@@ -103,51 +99,34 @@ public class MainActivity extends AppCompatActivity {
                 return super.onConsoleMessage(consoleMessage);
             }
         });
-        checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        checkBox.setOnCheckedChangeListener((compoundButton, b) -> new Timer().schedule(new TimerTask() {
             @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                new Timer().schedule(new TimerTask() {
-                    @Override
-                    public void run() {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                if(checkBox.isChecked()){
-                                    if(fbmode){
-                                        webView.evaluateJavascript(fbCode, new ValueCallback<String>() {
-                                            @Override
-                                            public void onReceiveValue(String s) {}
-                                        });
-                                    }else{
-                                        webView.evaluateJavascript(instaCode, new ValueCallback<String>() {
-                                            @Override
-                                            public void onReceiveValue(String s) {}
-                                        });
-                                    }
-                                }else{
-                                    webView.evaluateJavascript("window.onscroll = async function (e){\n" +
-                                                    "    //Ad remover\n" +
-                                                    "    var allpost = document.getElementsByClassName('_55wo _5rgr _5gh8 async_like')\n" +
-                                                    "    for(var i = 0 ; i<allpost.length;i++){\n" +
-                                                    "        var ads = allpost[i].getElementsByTagName('iframe')\n" +
-                                                    "        var suggested = allpost[i].getElementsByClassName('_52jh _5rgs _78cx _5sg5')\n" +
-                                                    "        if(ads.length>0 || suggested.length>0){\n" +
-                                                    "            console.log(\"ad removed\")\n" +
-                                                    "            allpost[i].remove();\n" +
-                                                    "        }\n" +
-                                                    "    }\n" +
-                                                    "}"
-                                            , new ValueCallback<String>() {
-                                        @Override
-                                        public void onReceiveValue(String s) { }
-                                    });
-                                }
-                            }
-                        });
+            public void run() {
+                runOnUiThread(() -> {
+                    if(checkBox.isChecked()){
+                        if(fbmode){
+                            webView.evaluateJavascript(fbCode, s -> {});
+                        }else{
+                            webView.evaluateJavascript(instaCode, s -> {});
+                        }
+                    }else{
+                        webView.evaluateJavascript("window.onscroll = async function (e){\n" +
+                                        "    //Ad remover\n" +
+                                        "    var allpost = document.getElementsByClassName('_55wo _5rgr _5gh8 async_like')\n" +
+                                        "    for(var i = 0 ; i<allpost.length;i++){\n" +
+                                        "        var ads = allpost[i].getElementsByTagName('iframe')\n" +
+                                        "        var suggested = allpost[i].getElementsByClassName('_52jh _5rgs _78cx _5sg5')\n" +
+                                        "        if(ads.length>0 || suggested.length>0){\n" +
+                                        "            console.log(\"ad removed\")\n" +
+                                        "            allpost[i].remove();\n" +
+                                        "        }\n" +
+                                        "    }\n" +
+                                        "}"
+                                , s -> { });
                     }
-                },500);
+                });
             }
-        });
+        },500));
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
@@ -162,15 +141,12 @@ public class MainActivity extends AppCompatActivity {
                 scroller(seekBar.getProgress());
             }
         });
-        new nAnimator(neumorphicFrameLayout, NeumorphicFrameLayout.State.CONCAVE, new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(getApplicationContext(),"Switching...",Toast.LENGTH_LONG).show();
-                seekBar.setProgress(0);
-                checkBox.setChecked(false);
-                fbmode=!fbmode;
-                loadPage();
-            }
+        new nAnimator(neumorphicFrameLayout, NeumorphicFrameLayout.State.CONCAVE, () -> {
+            Toast.makeText(getApplicationContext(),"Switching...",Toast.LENGTH_LONG).show();
+            seekBar.setProgress(0);
+            checkBox.setChecked(false);
+            fbmode=!fbmode;
+            loadPage();
         });
     }
 
@@ -182,7 +158,7 @@ public class MainActivity extends AppCompatActivity {
     public void scroller(int time){
         try {
             t.cancel();
-        }catch (Exception e){}
+        }catch (Exception ignored){}
         t = new Timer();
         if(time==0) {
             webView.setKeepScreenOn(false);
@@ -193,12 +169,9 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                if(finished){
-                   webView.post(new Runnable() {
-                       @Override
-                       public void run() {
-                           System.out.println("Scrolling in fb");
-                           webView.pageDown(false);
-                       }
+                   webView.post(() -> {
+                       System.out.println("Scrolling in fb");
+                       webView.pageDown(false);
                    });
                }
             }
@@ -217,30 +190,21 @@ public class MainActivity extends AppCompatActivity {
         }
     }
     String readAsset(String file){
-        String data = "";
-        BufferedReader reader = null;
-        try {
-            reader = new BufferedReader(
-                    new InputStreamReader(getAssets().open(file), "UTF-8"));
+        StringBuilder data = new StringBuilder();
+        try (BufferedReader reader = new BufferedReader(
+                new InputStreamReader(getAssets().open(file), StandardCharsets.UTF_8))) {
 
             // do reading, usually loop until end of file reading
             String mLine;
             while ((mLine = reader.readLine()) != null) {
                 //process line
-                data=data+"\n"+mLine;
+                data.append("\n").append(mLine);
             }
         } catch (IOException e) {
             showText(e.getMessage());
-        } finally {
-            if (reader != null) {
-                try {
-                    reader.close();
-                } catch (IOException e) {
-                    //log the exception
-                }
-            }
         }
-        return data;
+        //log the exception
+        return data.toString();
     }
     public void showText(String message){
      Toast.makeText(getApplicationContext(),message,Toast.LENGTH_LONG).show();
