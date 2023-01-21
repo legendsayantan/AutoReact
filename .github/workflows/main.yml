@@ -1,4 +1,4 @@
-name: Publish AutoReact Extension
+name: Build Extension
 
 on:
   push:
@@ -22,7 +22,14 @@ jobs:
       uses: jossef/action-latest-release-info@v1.2.1
       env:
         GITHUB_TOKEN: ${{ github.token }}
-     
+
+    - name: Delete old release assets
+      uses: mknejp/delete-release-assets@v1
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        tag: latest
+        assets: AutoReact.zip
+
     - name: Publish to release
       uses: actions/upload-release-asset@v1
       env:
