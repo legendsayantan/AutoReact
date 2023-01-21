@@ -1,0 +1,34 @@
+name: Publish AutoReact Extension
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Compress extension folder
+      run: zip -r AutoReact.zip extension/AutoReact
+
+    - name: Gets latest created release info
+      id: latest_release_info
+      uses: jossef/action-latest-release-info@v1.2.1
+      env:
+        GITHUB_TOKEN: ${{ github.token }}
+     
+    - name: Publish to release
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.latest_release_info.outputs.upload_url }}
+        asset_path: AutoReact.zip
+        asset_name: AutoReact.zip
+        asset_content_type: application/zip
