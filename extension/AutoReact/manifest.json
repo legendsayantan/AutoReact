@@ -1,0 +1,21 @@
+{
+    "name": "AutoReact",
+    "version": "1.0.0",
+    "description": "Automatic reactions for Facebook and Instagram.",
+    "manifest_version": 3,
+    "author": "LegendSayantan",
+    "action":{
+        "default_popup": "index.html",
+        "default_title": "AutoReact"
+    },
+    "host_permissions": [
+        "http://*/*","https://*/*"
+    ],
+    "permissions": [
+        "tabs","scripting" ,"activeTab"
+    ],
+    "icons":{
+        "400":"icon.png"
+    }
+    
+}

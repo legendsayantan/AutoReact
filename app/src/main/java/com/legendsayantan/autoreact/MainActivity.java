@@ -1,9 +1,16 @@
 package com.legendsayantan.autoreact;
 
 import android.annotation.SuppressLint;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.ContextMenu;
+import android.view.View;
 import android.webkit.ConsoleMessage;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
@@ -148,6 +155,24 @@ public class MainActivity extends AppCompatActivity {
             fbmode=!fbmode;
             loadPage();
         });
+        registerForContextMenu(webView);
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        menu.add(0, v.getId(), 0, "Open in Browser").setOnMenuItemClickListener(item -> {
+            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(webView.getUrl()));
+            startActivity(browserIntent);
+            return true;
+        });
+        menu.add(1, v.getId(), 0, "Copy Link").setOnMenuItemClickListener(item -> {
+            ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+            ClipData clip = ClipData.newPlainText("Link", webView.getUrl());
+            clipboard.setPrimaryClip(clip);
+            Toast.makeText(getApplicationContext(),"Link Copied",Toast.LENGTH_LONG).show();
+            return true;
+        });
     }
 
     @Override
@@ -175,7 +200,7 @@ public class MainActivity extends AppCompatActivity {
                    });
                }
             }
-        },0,(15000-(time*2500L)));
+        },0,(15000-(time*2400L)));
     }
     public void loadPage(){
         if(fbmode) {
